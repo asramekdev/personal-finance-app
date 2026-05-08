@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
+import { Layers } from 'lucide-react'
 import HeroModule from '../pension/HeroModule'
 import FundCard from '../pension/FundCard'
 import DrawerLevel1 from '../pension/DrawerLevel1'
@@ -63,15 +64,22 @@ export default function PenzijniSporeni({ funds, setFunds }) {
           onChartViewChange={setChartView}
         />
 
-        <div className="grid grid-cols-2 gap-4">
-          {funds.map(fund => (
-            <FundCard
-              key={fund.id}
-              fund={fund}
-              onOpenDetail={handleOpenDetail}
-              onNewRecord={handleNewRecord}
-            />
-          ))}
+        <div className="mt-4 flex flex-col gap-3">
+          <div className="flex items-center gap-3 px-1">
+            <Layers size={18} strokeWidth={1.8} className="text-white/40" />
+            <h1 className="text-lg font-semibold tracking-tight text-white/80">Fondy</h1>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {funds.map(fund => (
+              <FundCard
+                key={fund.id}
+                fund={fund}
+                onOpenDetail={handleOpenDetail}
+                onNewRecord={handleNewRecord}
+              />
+            ))}
+          </div>
         </div>
       </div>
 

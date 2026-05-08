@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { X } from 'lucide-react'
+import { useIsMobile } from '../../hooks/useIsMobile'
 
 const SPRING = { type: 'spring', damping: 30, stiffness: 340 }
 
@@ -12,6 +13,7 @@ function today() {
 export default function DrawerForm({ mode, record, onClose, onSave }) {
   const isProduct = mode === 'product'
   const isEdit = mode === 'record' && record
+  const isMobile = useIsMobile()
 
   const [name, setName] = useState('')
   const [date, setDate] = useState(isEdit ? record.date : today())
@@ -37,7 +39,7 @@ export default function DrawerForm({ mode, record, onClose, onSave }) {
   return (
     <>
       <motion.div
-        className="absolute inset-0 bg-black/25"
+        className={isMobile ? 'fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px]' : 'absolute inset-0 bg-black/25'}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -45,11 +47,14 @@ export default function DrawerForm({ mode, record, onClose, onSave }) {
       />
 
       <motion.div
-        className="absolute inset-y-0 right-0 flex w-[420px] flex-col overflow-hidden rounded-l-3xl border-l border-t border-b border-white/[0.12] bg-[rgba(15,20,35,0.88)] shadow-2xl"
+        className={isMobile
+          ? 'fixed inset-x-0 bottom-0 z-50 flex max-h-[88vh] flex-col overflow-hidden rounded-t-3xl border-t border-white/[0.12] bg-[rgba(15,20,35,0.92)] shadow-2xl'
+          : 'absolute inset-y-0 right-0 flex w-[420px] flex-col overflow-hidden rounded-l-3xl border-l border-t border-b border-white/[0.12] bg-[rgba(15,20,35,0.88)] shadow-2xl'
+        }
         style={{ backdropFilter: 'blur(32px) saturate(160%)' }}
-        initial={{ x: '100%' }}
-        animate={{ x: 0 }}
-        exit={{ x: '100%' }}
+        initial={isMobile ? { y: '100%' } : { x: '100%' }}
+        animate={isMobile ? { y: 0 } : { x: 0 }}
+        exit={isMobile ? { y: '100%' } : { x: '100%' }}
         transition={SPRING}
       >
         {/* Header */}

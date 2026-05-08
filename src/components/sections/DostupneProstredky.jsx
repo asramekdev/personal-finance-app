@@ -131,7 +131,7 @@ export default function DostupneProstredky({ products, setProducts }) {
           </button>
         </div>
 
-        <motion.div layout className="grid grid-cols-2 gap-4 xl:grid-cols-3">
+        <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 gap-4 xl:grid-cols-3">
           <AnimatePresence mode="popLayout">
             {visibleProducts.map(product => (
               <motion.div

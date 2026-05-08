@@ -51,6 +51,14 @@ body {
   @apply border-t border-white/[0.06] py-2.5 text-sm;
 }
 
+/* Bottom padding on mobile so content isn't hidden behind tab bar */
+@media (max-width: 767px) {
+  .section-fade > .overflow-y-auto,
+  .section-fade > div > .overflow-y-auto {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+  }
+}
+
 /* macOS-style thin scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

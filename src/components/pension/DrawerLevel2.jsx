@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useIsMobile } from '../../hooks/useIsMobile'
 import { X } from 'lucide-react'
 import { formatMonth } from './pensionData'
 
@@ -29,6 +30,7 @@ function Field({ label, value, onChange, type = 'number', suffix }) {
 
 export default function DrawerLevel2({ fundId, record, onSave, onClose }) {
   const isEdit = record !== null && record !== 'new'
+  const isMobile = useIsMobile()
 
   const [form, setForm] = useState({
     date: '',
@@ -73,14 +75,27 @@ export default function DrawerLevel2({ fundId, record, onSave, onClose }) {
   const title = isEdit ? `Upravit – ${formatMonth(record.date)}` : 'Nový záznam'
 
   return (
-    <motion.div
-      className="absolute inset-y-0 right-0 z-20 flex w-[400px] flex-col overflow-hidden rounded-l-3xl border-l border-t border-b border-white/[0.15] bg-[rgba(18,24,42,0.88)] shadow-2xl"
-      style={{ backdropFilter: 'blur(36px) saturate(160%)' }}
-      initial={{ x: '100%' }}
-      animate={{ x: 0 }}
-      exit={{ x: '100%' }}
-      transition={SPRING}
-    >
+    <>
+      {isMobile && (
+        <motion.div
+          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+        />
+      )}
+      <motion.div
+        className={isMobile
+          ? 'fixed inset-x-0 bottom-0 z-50 flex max-h-[88vh] flex-col overflow-hidden rounded-t-3xl border-t border-white/[0.15] bg-[rgba(18,24,42,0.92)] shadow-2xl'
+          : 'absolute inset-y-0 right-0 z-20 flex w-[400px] flex-col overflow-hidden rounded-l-3xl border-l border-t border-b border-white/[0.15] bg-[rgba(18,24,42,0.88)] shadow-2xl'
+        }
+        style={{ backdropFilter: 'blur(36px) saturate(160%)' }}
+        initial={isMobile ? { y: '100%' } : { x: '100%' }}
+        animate={isMobile ? { y: 0 } : { x: 0 }}
+        exit={isMobile ? { y: '100%' } : { x: '100%' }}
+        transition={SPRING}
+      >
       {/* Header */}
       <div className="flex shrink-0 items-center justify-between border-b border-white/[0.08] px-6 py-4">
         <h2 className="text-base font-semibold text-white/90">{title}</h2>
@@ -147,6 +162,7 @@ export default function DrawerLevel2({ fundId, record, onSave, onClose }) {
           Uložit
         </button>
       </div>
-    </motion.div>
+      </motion.div>
+    </>
   )
 }

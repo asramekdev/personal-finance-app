@@ -9,7 +9,7 @@ const NAV_ITEMS = [
 
 export default function Sidebar({ activeSection, onSectionChange }) {
   return (
-    <aside className="liquid-glass flex w-60 shrink-0 flex-col rounded-r-4xl px-4 py-6 z-10">
+    <aside className="liquid-glass hidden md:flex w-60 shrink-0 flex-col rounded-r-4xl px-4 py-6 z-10">
       {/* Logo */}
       <div className="mb-8 flex items-center gap-3 px-2">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-apple-blue/90 shadow-apple-glow">

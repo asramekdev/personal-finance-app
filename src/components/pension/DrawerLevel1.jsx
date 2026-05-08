@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useIsMobile } from '../../hooks/useIsMobile'
 import { X, Pencil } from 'lucide-react'
 import {
   AreaChart, Area, XAxis, Tooltip, ResponsiveContainer,
@@ -20,6 +21,7 @@ const SPRING = { type: 'spring', damping: 28, stiffness: 320 }
 
 export default function DrawerLevel1({ fund, isL2Open, onClose, onEditRecord, onNewRecord }) {
   const [view, setView] = useState('months')
+  const isMobile = useIsMobile()
   const chartData = fundChartData(fund.records, view)
   const sortedRecords = [...fund.records].sort((a, b) => b.date.localeCompare(a.date))
 
@@ -33,7 +35,7 @@ export default function DrawerLevel1({ fund, isL2Open, onClose, onEditRecord, on
     <>
       {/* Backdrop */}
       <motion.div
-        className="absolute inset-0 bg-black/45 backdrop-blur-[2px]"
+        className={isMobile ? 'fixed inset-0 z-40 bg-black/50 backdrop-blur-[2px]' : 'absolute inset-0 bg-black/45 backdrop-blur-[2px]'}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -42,15 +44,17 @@ export default function DrawerLevel1({ fund, isL2Open, onClose, onEditRecord, on
 
       {/* Drawer panel */}
       <motion.div
-        className="absolute inset-y-0 right-0 flex w-[888px] flex-col overflow-hidden rounded-l-3xl border-l border-t border-b border-white/[0.12] bg-[rgba(15,20,35,0.82)] shadow-2xl"
+        className={isMobile
+          ? 'fixed inset-x-0 bottom-0 z-40 flex max-h-[92vh] flex-col overflow-hidden rounded-t-3xl border-t border-white/[0.12] bg-[rgba(15,20,35,0.82)] shadow-2xl'
+          : 'absolute inset-y-0 right-0 flex w-[888px] flex-col overflow-hidden rounded-l-3xl border-l border-t border-b border-white/[0.12] bg-[rgba(15,20,35,0.82)] shadow-2xl'
+        }
         style={{ backdropFilter: 'blur(32px) saturate(160%)' }}
-        initial={{ x: '100%' }}
-        animate={{
-          x: 0,
-          scale: isL2Open ? 0.96 : 1,
-          filter: isL2Open ? 'blur(3px)' : 'blur(0px)',
-        }}
-        exit={{ x: '100%' }}
+        initial={isMobile ? { y: '100%' } : { x: '100%' }}
+        animate={isMobile
+          ? { y: 0, scale: isL2Open ? 0.97 : 1, filter: isL2Open ? 'blur(3px)' : 'blur(0px)' }
+          : { x: 0, scale: isL2Open ? 0.96 : 1, filter: isL2Open ? 'blur(3px)' : 'blur(0px)' }
+        }
+        exit={isMobile ? { y: '100%' } : { x: '100%' }}
         transition={SPRING}
       >
         {/* Header */}
