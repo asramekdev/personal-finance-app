@@ -1,13 +1,11 @@
 import { useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
-import { INITIAL_FUNDS } from '../pension/pensionData'
 import HeroModule from '../pension/HeroModule'
 import FundCard from '../pension/FundCard'
 import DrawerLevel1 from '../pension/DrawerLevel1'
 import DrawerLevel2 from '../pension/DrawerLevel2'
 
-export default function PenzijniSporeni() {
-  const [funds, setFunds] = useState(INITIAL_FUNDS)
+export default function PenzijniSporeni({ funds, setFunds }) {
   const [chartView, setChartView] = useState('months')
   const [openFundId, setOpenFundId] = useState(null)     // L1
   const [editRecord, setEditRecord] = useState(null)     // L2: record obj | 'new' | null

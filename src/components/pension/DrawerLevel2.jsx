@@ -9,16 +9,16 @@ function Field({ label, value, onChange, type = 'number', suffix }) {
   return (
     <div className="flex flex-col gap-1.5">
       <label className="text-xs font-medium text-white/40">{label}</label>
-      <div className="relative">
+      <div className="flex overflow-hidden rounded-xl border border-white/[0.1] bg-white/[0.06] transition-colors focus-within:border-apple-blue/60 focus-within:bg-white/[0.09]">
         <input
           type={type}
           value={value}
           onChange={e => onChange(e.target.value)}
-          className="w-full rounded-xl border border-white/[0.1] bg-white/[0.06] px-3.5 py-2.5 text-sm text-white/90 outline-none transition-all focus:border-apple-blue/60 focus:bg-white/[0.09] focus:ring-1 focus:ring-apple-blue/30"
+          className="flex-1 bg-transparent px-3.5 py-2.5 text-sm text-white/90 outline-none"
           min={type === 'number' ? 0 : undefined}
         />
         {suffix && (
-          <span className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-sm text-white/30">
+          <span className="flex items-center border-l border-white/[0.08] px-3 text-sm text-white/35">
             {suffix}
           </span>
         )}

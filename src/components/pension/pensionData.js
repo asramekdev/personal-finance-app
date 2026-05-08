@@ -90,7 +90,7 @@ export const INITIAL_FUNDS = [
 
 export function currentValue(records) {
   if (!records.length) return 0
-  return records[records.length - 1].value
+  return [...records].sort((a, b) => b.date.localeCompare(a.date))[0].value
 }
 
 export function totalDeposited(records) {
