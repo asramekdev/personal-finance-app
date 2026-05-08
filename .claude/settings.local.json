@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create *)",
+      "Bash(npm run *)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(mkdir -p /Users/tonda/Desktop/ClaudeProjects/PersonalFinanceApp/.claude)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(grep -E \"\\\\.\\(json|js|html\\)$\")",
+      "Bash(npx vite *)"
+    ]
+  }
+}
