@@ -132,11 +132,17 @@ export default function DrawerLevel2({ fundId, record, onSave, onClose }) {
       </div>
 
       {/* Footer */}
-      <div className="shrink-0 border-t border-white/[0.08] px-6 py-4">
+      <div className="shrink-0 border-t border-white/[0.08] px-6 py-4 flex gap-3">
+        <button
+          onClick={onClose}
+          className="flex-1 rounded-xl border border-white/[0.1] bg-white/[0.05] py-2.5 text-sm font-medium text-white/60 transition-colors hover:bg-white/[0.1] hover:text-white/80"
+        >
+          Zavřít
+        </button>
         <button
           onClick={handleSave}
           disabled={!form.date || !form.value}
-          className="w-full rounded-xl bg-apple-blue py-2.5 text-sm font-semibold text-white shadow-apple-glow transition-opacity disabled:opacity-40 hover:opacity-90"
+          className="flex-1 rounded-xl bg-apple-blue py-2.5 text-sm font-semibold text-white shadow-apple-glow transition-opacity disabled:opacity-40 hover:opacity-90"
         >
           Uložit
         </button>

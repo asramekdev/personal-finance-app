@@ -28,7 +28,7 @@ export default function HeroModule({ funds, chartView, onChartViewChange }) {
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs font-medium uppercase tracking-widest text-white/35">
-            Celková hodnota úspor
+            Celková hodnota penzijního spoření
           </p>
           <p className="mt-1 text-4xl font-semibold tracking-tight text-white/95">
             {formatCZK(totalValue)}
@@ -49,7 +49,6 @@ export default function HeroModule({ funds, chartView, onChartViewChange }) {
             <span className={`text-sm font-medium ${isPositive ? 'text-[#30D158]' : 'text-red-400'}`}>
               {isPositive ? '+' : ''}{formatCZK(gain)}
             </span>
-            <span className="text-xs text-white/30">celkové zhodnocení</span>
           </div>
         </div>
 

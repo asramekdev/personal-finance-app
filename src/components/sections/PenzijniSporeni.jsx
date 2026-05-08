@@ -23,8 +23,8 @@ export default function PenzijniSporeni() {
   function handleNewRecord(fundId) {
     setEditFundId(fundId)
     setEditRecord('new')
-    // Also open L1 if we're opening from fund card (so L1 is behind)
-    if (!openFundId) setOpenFundId(fundId)
+    // L1 stays as-is — if already open (called from inside L1) stacking applies;
+    // if called from the card, L1 remains closed and only L2 shows
   }
 
   function handleEditRecord(record) {
@@ -83,7 +83,6 @@ export default function PenzijniSporeni() {
           <DrawerLevel1
             key="l1"
             fund={openFund}
-            chartView={chartView}
             isL2Open={editRecord !== null}
             onClose={handleCloseL1}
             onEditRecord={handleEditRecord}

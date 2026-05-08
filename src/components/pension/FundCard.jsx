@@ -44,18 +44,18 @@ export default function FundCard({ fund, onOpenDetail, onNewRecord }) {
       {/* Action buttons */}
       <div className="flex gap-2">
         <button
-          onClick={() => onNewRecord(fund.id)}
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/5 py-2 text-xs font-medium text-white/60 transition-colors hover:bg-white/10 hover:text-white/80"
-        >
-          <Plus size={13} strokeWidth={2.5} />
-          Nový záznam
-        </button>
-        <button
           onClick={() => onOpenDetail(fund.id)}
-          className="flex flex-1 items-center justify-center gap-1 rounded-xl bg-apple-blue/15 py-2 text-xs font-medium text-apple-blue transition-colors hover:bg-apple-blue/25"
+          className="flex flex-1 items-center justify-center gap-1 rounded-xl border border-white/10 bg-white/5 py-2 text-xs font-medium text-white/60 transition-colors hover:bg-white/10 hover:text-white/80"
         >
           Detail
           <ChevronRight size={13} strokeWidth={2.5} />
+        </button>
+        <button
+          onClick={() => onNewRecord(fund.id)}
+          className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-apple-blue/15 py-2 text-xs font-medium text-apple-blue transition-colors hover:bg-apple-blue/25"
+        >
+          <Plus size={13} strokeWidth={2.5} />
+          Nový záznam
         </button>
       </div>
     </div>
