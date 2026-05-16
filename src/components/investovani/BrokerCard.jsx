@@ -1,0 +1,92 @@
+import { Plus } from 'lucide-react'
+import { tickerCurrentValue, tickerTotalShares, tickerCostBasis, formatCZK } from './investovaniData'
+
+function TickerRow({ ticker, brokerId, onOpenDetail }) {
+  const value = tickerCurrentValue(ticker.records)
+  const totalShares = tickerTotalShares(ticker.purchases)
+  const costBasis = tickerCostBasis(ticker.purchases)
+  const gain = value - costBasis
+  const gainPct = costBasis > 0 ? (gain / costBasis) * 100 : 0
+  const isPositive = gain >= 0
+  const avgPrice = totalShares > 0 ? costBasis / totalShares : 0
+
+  return (
+    <div
+      className="flex cursor-pointer items-center justify-between gap-3 rounded-xl px-4 py-3 transition-colors hover:bg-white/[0.04]"
+      onClick={() => onOpenDetail(brokerId, ticker.id)}
+    >
+      <div className="min-w-0">
+        <p className="text-sm font-semibold text-white/90">{ticker.symbol}</p>
+        <p className="truncate text-xs text-white/40">{ticker.name}</p>
+        <p className="mt-0.5 text-xs text-white/30">
+          {totalShares} ks · ø {formatCZK(avgPrice)}/ks
+        </p>
+      </div>
+      <div className="shrink-0 text-right">
+        <p className="text-sm font-semibold text-white/90">{formatCZK(value)}</p>
+        <p className={`text-xs font-medium ${isPositive ? 'text-[#30D158]' : 'text-red-400'}`}>
+          {isPositive ? '+' : ''}
+          {gainPct.toFixed(1)}%
+        </p>
+        <p className={`text-[11px] ${isPositive ? 'text-[#30D158]/70' : 'text-red-400/70'}`}>
+          {isPositive ? '+' : ''}
+          {formatCZK(gain)}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+export default function BrokerCard({ broker, onOpenDetail, onAddTicker }) {
+  const brokerTotal = broker.tickers.reduce((s, t) => s + tickerCurrentValue(t.records), 0)
+
+  return (
+    <div className="liquid-glass flex flex-col overflow-hidden rounded-2xl">
+      {/* Header */}
+      <div className="flex items-center justify-between gap-3 px-5 pb-3 pt-5">
+        <div className="flex items-center gap-2">
+          <span
+            className="h-2.5 w-2.5 rounded-full"
+            style={{
+              backgroundColor: broker.color,
+              boxShadow: `0 0 6px 1px ${broker.color}60`,
+            }}
+          />
+          <span className="text-sm font-semibold text-white/80">{broker.name}</span>
+        </div>
+        <p className="text-base font-semibold tracking-tight text-white/90">
+          {formatCZK(brokerTotal)}
+        </p>
+      </div>
+
+      {/* Divider */}
+      {broker.tickers.length > 0 && <div className="mx-4 border-t border-white/[0.07]" />}
+
+      {/* Ticker rows */}
+      <div className="flex flex-col py-1">
+        {broker.tickers.map((ticker, i) => (
+          <div key={ticker.id}>
+            {i > 0 && <div className="mx-4 border-t border-white/[0.05]" />}
+            <TickerRow ticker={ticker} brokerId={broker.id} onOpenDetail={onOpenDetail} />
+          </div>
+        ))}
+        {broker.tickers.length === 0 && (
+          <p className="px-5 py-3 text-xs text-white/25">
+            Žádné tickery — přidejte první pozici.
+          </p>
+        )}
+      </div>
+
+      {/* Add ticker button */}
+      <div className="px-4 pb-4 pt-1">
+        <button
+          onClick={() => onAddTicker(broker.id)}
+          className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-apple-blue/15 py-2 text-xs font-medium text-apple-blue transition-colors hover:bg-apple-blue/25"
+        >
+          <Plus size={13} strokeWidth={2.5} />
+          Přidat ticker
+        </button>
+      </div>
+    </div>
+  )
+}

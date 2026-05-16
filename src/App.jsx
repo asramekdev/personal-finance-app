@@ -8,6 +8,7 @@ import Investovani from './components/sections/Investovani'
 import PenzijniSporeni from './components/sections/PenzijniSporeni'
 import { INITIAL_FUNDS } from './components/pension/pensionData'
 import { INITIAL_PRODUCTS } from './components/dostupne/dostupneData'
+import { INITIAL_BROKERS } from './components/investovani/investovaniData'
 
 const SECTION_LABELS = {
   prehled: 'Přehled',
@@ -20,6 +21,7 @@ export default function App() {
   const [activeSection, setActiveSection] = useState('prehled')
   const [funds, setFunds] = useState(INITIAL_FUNDS)
   const [products, setProducts] = useState(INITIAL_PRODUCTS)
+  const [brokers, setBrokers] = useState(INITIAL_BROKERS)
 
   function renderSection() {
     switch (activeSection) {
@@ -28,7 +30,7 @@ export default function App() {
       case 'dostupne':
         return <DostupneProstredky key="dostupne" products={products} setProducts={setProducts} />
       case 'investovani':
-        return <Investovani key="investovani" />
+        return <Investovani key="investovani" brokers={brokers} setBrokers={setBrokers} />
       case 'penzijni':
         return <PenzijniSporeni key="penzijni" funds={funds} setFunds={setFunds} />
       default:
