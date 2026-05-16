@@ -65,9 +65,9 @@ export default function InvestovaniDrawerL2({ mode, data, onSave, onClose }) {
     } else if (mode === 'addTicker') {
       setForm({ symbol: '', name: '', date: month, shares: '', pricePerShare: '' })
     } else if (mode === 'newRecord') {
-      setForm({ date: month, value: '' })
+      setForm({ date: month, value: '', shares: '' })
     } else if (mode === 'editRecord') {
-      setForm({ date: data.date, value: String(data.value) })
+      setForm({ date: data.date, value: String(data.value), shares: String(data.shares ?? '') })
     } else if (mode === 'newPurchase') {
       setForm({ date: month, shares: '', pricePerShare: '' })
     } else if (mode === 'editPurchase') {
@@ -105,6 +105,7 @@ export default function InvestovaniDrawerL2({ mode, data, onSave, onClose }) {
         id: form.date,
         date: form.date,
         value: Number(form.value) || 0,
+        shares: Number(form.shares) || 0,
       })
     } else if (mode === 'newPurchase' || mode === 'editPurchase') {
       onSave({
@@ -214,6 +215,12 @@ export default function InvestovaniDrawerL2({ mode, data, onSave, onClose }) {
           {(mode === 'newRecord' || mode === 'editRecord') && (
             <>
               <MonthField label="Měsíc / Rok" value={form.date || ''} onChange={set('date')} />
+              <Field
+                label="Počet akcií"
+                value={form.shares || ''}
+                onChange={set('shares')}
+                suffix="ks"
+              />
               <Field
                 label="Hodnota pozice k ultimu měsíce"
                 value={form.value || ''}

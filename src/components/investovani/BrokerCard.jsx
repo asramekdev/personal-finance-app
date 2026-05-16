@@ -1,14 +1,13 @@
 import { Plus } from 'lucide-react'
 import { tickerCurrentValue, tickerTotalShares, tickerCostBasis, formatCZK } from './investovaniData'
+import PrimaryButton from '../ui/PrimaryButton'
 
 function TickerRow({ ticker, brokerId, onOpenDetail }) {
   const value = tickerCurrentValue(ticker.records)
   const totalShares = tickerTotalShares(ticker.purchases)
   const costBasis = tickerCostBasis(ticker.purchases)
   const gain = value - costBasis
-  const gainPct = costBasis > 0 ? (gain / costBasis) * 100 : 0
   const isPositive = gain >= 0
-  const avgPrice = totalShares > 0 ? costBasis / totalShares : 0
 
   return (
     <div
@@ -16,19 +15,14 @@ function TickerRow({ ticker, brokerId, onOpenDetail }) {
       onClick={() => onOpenDetail(brokerId, ticker.id)}
     >
       <div className="min-w-0">
-        <p className="text-sm font-semibold text-white/90">{ticker.symbol}</p>
-        <p className="truncate text-xs text-white/40">{ticker.name}</p>
-        <p className="mt-0.5 text-xs text-white/30">
-          {totalShares} ks · ø {formatCZK(avgPrice)}/ks
+        <p className="text-sm font-semibold text-white/90">{ticker.name}</p>
+        <p className="mt-0.5 text-xs text-white/40">
+          {totalShares} {ticker.symbol}
         </p>
       </div>
       <div className="shrink-0 text-right">
-        <p className="text-sm font-semibold text-white/90">{formatCZK(value)}</p>
+        <p className="text-sm font-semibold text-white/90">{formatCZK(costBasis)}</p>
         <p className={`text-xs font-medium ${isPositive ? 'text-[#30D158]' : 'text-red-400'}`}>
-          {isPositive ? '+' : ''}
-          {gainPct.toFixed(1)}%
-        </p>
-        <p className={`text-[11px] ${isPositive ? 'text-[#30D158]/70' : 'text-red-400/70'}`}>
           {isPositive ? '+' : ''}
           {formatCZK(gain)}
         </p>
@@ -79,13 +73,10 @@ export default function BrokerCard({ broker, onOpenDetail, onAddTicker }) {
 
       {/* Add ticker button */}
       <div className="px-4 pb-4 pt-1">
-        <button
-          onClick={() => onAddTicker(broker.id)}
-          className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-apple-blue/15 py-2 text-xs font-medium text-apple-blue transition-colors hover:bg-apple-blue/25"
-        >
+        <PrimaryButton className="w-full justify-center" onClick={() => onAddTicker(broker.id)}>
           <Plus size={13} strokeWidth={2.5} />
           Přidat ticker
-        </button>
+        </PrimaryButton>
       </div>
     </div>
   )

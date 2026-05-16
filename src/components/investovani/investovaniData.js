@@ -4,7 +4,7 @@ function sr() {
   return seed / 233280
 }
 
-function genRecords(startValue, monthlyGrowth, volatility) {
+function genRecords(startValue, monthlyGrowth, volatility, shares = 0) {
   const records = []
   const end = new Date(2026, 4, 1)
   let value = startValue
@@ -14,7 +14,7 @@ function genRecords(startValue, monthlyGrowth, volatility) {
     const date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
     const noise = (sr() - 0.45) * volatility
     value = Math.max(0, value * (1 + monthlyGrowth + noise))
-    records.push({ id: date, date, value: Math.round(value) })
+    records.push({ id: date, date, value: Math.round(value), shares })
   }
   return records
 }
@@ -33,7 +33,7 @@ export const INITIAL_BROKERS = [
           { id: 'p1', shares: 5, pricePerShare: 4200, date: '2024-02' },
           { id: 'p2', shares: 3, pricePerShare: 4850, date: '2024-09' },
         ],
-        records: genRecords(21000, 0.006, 0.04),
+        records: genRecords(21000, 0.006, 0.04, 8),
       },
       {
         id: 'msft',
@@ -42,7 +42,7 @@ export const INITIAL_BROKERS = [
         purchases: [
           { id: 'p3', shares: 2, pricePerShare: 9500, date: '2024-04' },
         ],
-        records: genRecords(19000, 0.007, 0.035),
+        records: genRecords(19000, 0.007, 0.035, 2),
       },
     ],
   },
@@ -59,7 +59,7 @@ export const INITIAL_BROKERS = [
           { id: 'p4', shares: 10, pricePerShare: 3200, date: '2024-01' },
           { id: 'p5', shares: 5, pricePerShare: 3450, date: '2024-07' },
         ],
-        records: genRecords(32000, 0.005, 0.025),
+        records: genRecords(32000, 0.005, 0.025, 15),
       },
     ],
   },
@@ -150,4 +150,65 @@ export function formatChartDate(dateStr, view) {
   if (view === 'years') return dateStr
   const [, m] = dateStr.split('-')
   return MONTHS[parseInt(m) - 1]
+}
+
+export function aggregatedTickerStats(brokers) {
+  const bySymbol = {}
+  brokers.forEach(broker => {
+    broker.tickers.forEach(ticker => {
+      const value = tickerCurrentValue(ticker.records)
+      const costBasis = tickerCostBasis(ticker.purchases)
+      const shares = tickerTotalShares(ticker.purchases)
+      if (!bySymbol[ticker.symbol]) {
+        bySymbol[ticker.symbol] = {
+          symbol: ticker.symbol,
+          name: ticker.name,
+          value: 0,
+          costBasis: 0,
+          shares: 0,
+        }
+      }
+      bySymbol[ticker.symbol].value += value
+      bySymbol[ticker.symbol].costBasis += costBasis
+      bySymbol[ticker.symbol].shares += shares
+    })
+  })
+  return Object.values(bySymbol)
+}
+
+export function structureChartData(brokers) {
+  const tickers = aggregatedTickerStats(brokers)
+  const totalValue = tickers.reduce((sum, ticker) => sum + ticker.value, 0)
+  if (totalValue === 0) return []
+
+  const sorted = [...tickers].sort((a, b) => b.value - a.value)
+  const top = sorted.slice(0, 5).map(ticker => ({
+    ...ticker,
+    percent: (ticker.value / totalValue) * 100,
+  }))
+
+  if (sorted.length <= 5) return top
+
+  const restValue = sorted.slice(5).reduce((sum, ticker) => sum + ticker.value, 0)
+  return [
+    ...top,
+    {
+      symbol: 'Ostatní',
+      name: 'Ostatní',
+      value: restValue,
+      percent: (restValue / totalValue) * 100,
+      isOther: true,
+    },
+  ]
+}
+
+export function structureListData(brokers) {
+  const tickers = aggregatedTickerStats(brokers)
+  const totalValue = tickers.reduce((sum, ticker) => sum + ticker.value, 0)
+  return tickers
+    .sort((a, b) => b.value - a.value)
+    .map(ticker => ({
+      ...ticker,
+      percent: totalValue === 0 ? 0 : (ticker.value / totalValue) * 100,
+    }))
 }

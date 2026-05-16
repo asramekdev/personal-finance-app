@@ -3,8 +3,10 @@ import { AnimatePresence } from 'framer-motion'
 import { TrendingUp, Plus } from 'lucide-react'
 import InvestovaniHero from '../investovani/InvestovaniHero'
 import BrokerCard from '../investovani/BrokerCard'
+import PortfolioStructureCard from '../investovani/PortfolioStructureCard'
 import InvestovaniDrawerL1 from '../investovani/InvestovaniDrawerL1'
 import InvestovaniDrawerL2 from '../investovani/InvestovaniDrawerL2'
+import PrimaryButton from '../ui/PrimaryButton'
 import { BROKER_COLORS } from '../investovani/investovaniData'
 
 export default function Investovani({ brokers, setBrokers }) {
@@ -156,11 +158,15 @@ export default function Investovani({ brokers, setBrokers }) {
     <div className="section-fade relative flex flex-1 overflow-hidden">
       {/* Scrollable main content */}
       <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-6">
-        <InvestovaniHero
-          brokers={brokers}
-          chartView={chartView}
-          onChartViewChange={setChartView}
-        />
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
+          <InvestovaniHero
+            brokers={brokers}
+            chartView={chartView}
+            onChartViewChange={setChartView}
+            className="h-full"
+          />
+          <PortfolioStructureCard brokers={brokers} />
+        </div>
 
         <div className="mt-4 flex flex-col gap-3">
           <div className="flex items-center justify-between px-1">
@@ -168,13 +174,10 @@ export default function Investovani({ brokers, setBrokers }) {
               <TrendingUp size={18} strokeWidth={1.8} className="text-white/40" />
               <h1 className="text-lg font-semibold tracking-tight text-white/80">Brokeři</h1>
             </div>
-            <button
-              onClick={handleAddBroker}
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-apple-blue/15 text-apple-blue transition-colors hover:bg-apple-blue/25"
-              title="Přidat brokera"
-            >
-              <Plus size={15} strokeWidth={2.5} />
-            </button>
+            <PrimaryButton onClick={handleAddBroker}>
+              <Plus size={13} strokeWidth={2.5} />
+              Přidat brokera
+            </PrimaryButton>
           </div>
 
           <div className="grid grid-cols-1 gap-4">

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useIsMobile } from '../../hooks/useIsMobile'
 import { X, Pencil } from 'lucide-react'
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from 'recharts'
@@ -36,10 +36,15 @@ export default function InvestovaniDrawerL1({
   onEditPurchase,
 }) {
   const [view, setView] = useState('months')
+  const [showAll, setShowAll] = useState(false)
   const isMobile = useIsMobile()
 
   const chartData = tickerChartData(ticker.records, view)
   const sortedRecords = [...ticker.records].sort((a, b) => b.date.localeCompare(a.date))
+
+  const COLLAPSE_THRESHOLD = 6
+  const hasMore = sortedRecords.length > COLLAPSE_THRESHOLD
+  const displayedRecords = showAll || !hasMore ? sortedRecords : sortedRecords.slice(0, COLLAPSE_THRESHOLD)
   const sortedPurchases = [...ticker.purchases].sort((a, b) => b.date.localeCompare(a.date))
 
   const value = tickerCurrentValue(ticker.records)
@@ -212,46 +217,99 @@ export default function InvestovaniDrawerL1({
                 + Nový záznam
               </button>
             </div>
-            <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.05]">
-              <div className="overflow-x-auto">
-                <table className="w-full pension-table">
-                  <thead>
-                    <tr className="border-b border-white/[0.08]">
-                      <th className="px-4 pb-3 pt-3 text-left">Měsíc</th>
-                      <th className="px-4 pb-3 pt-3 text-right">Hodnota</th>
-                      <th className="px-4 pb-3 pt-3" />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sortedRecords.length === 0 && (
-                      <tr>
-                        <td colSpan={3} className="px-4 py-4 text-center text-xs text-white/25">
-                          Zatím žádné záznamy
-                        </td>
+
+            <div className="relative">
+              <motion.div
+                layout="size"
+                transition={{ type: 'spring', damping: 30, stiffness: 260 }}
+                className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.05]"
+              >
+                <div className="overflow-x-auto">
+                  <table className="w-full pension-table">
+                    <thead>
+                      <tr className="border-b border-white/[0.08]">
+                        <th className="px-4 pb-3 pt-3 text-left">Měsíc</th>
+                        <th className="px-4 pb-3 pt-3 text-right">Počet akcií</th>
+                        <th className="px-4 pb-3 pt-3 text-right">Hodnota</th>
+                        <th className="px-4 pb-3 pt-3" />
                       </tr>
-                    )}
-                    {sortedRecords.map(record => (
-                      <tr key={record.id} className="transition-colors hover:bg-white/[0.03]">
-                        <td className="whitespace-nowrap px-4 py-2.5 text-white/70">
-                          {formatMonth(record.date)}
-                        </td>
-                        <td className="px-4 py-2.5 text-right tabular-nums font-medium text-white/85">
-                          {record.value.toLocaleString('cs-CZ')} Kč
-                        </td>
-                        <td className="px-4 py-2.5">
-                          <button
-                            onClick={() => onEditRecord(record)}
-                            className="flex h-6 w-6 items-center justify-center rounded-md text-white/30 transition-colors hover:bg-white/8 hover:text-white/60"
-                          >
-                            <Pencil size={11} />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {sortedRecords.length === 0 && (
+                        <tr>
+                          <td colSpan={4} className="px-4 py-4 text-center text-xs text-white/25">
+                            Zatím žádné záznamy
+                          </td>
+                        </tr>
+                      )}
+                      {displayedRecords.map(record => (
+                        <tr key={record.id} className="transition-colors hover:bg-white/[0.03]">
+                          <td className="whitespace-nowrap px-4 py-2.5 text-white/70">
+                            {formatMonth(record.date)}
+                          </td>
+                          <td className="px-4 py-2.5 text-right tabular-nums text-white/55">
+                            {(record.shares ?? 0) > 0 ? `${record.shares} ks` : '—'}
+                          </td>
+                          <td className="px-4 py-2.5 text-right tabular-nums font-medium text-white/85">
+                            {record.value.toLocaleString('cs-CZ')} Kč
+                          </td>
+                          <td className="px-4 py-2.5">
+                            <button
+                              onClick={() => onEditRecord(record)}
+                              className="flex h-6 w-6 items-center justify-center rounded-md text-white/30 transition-colors hover:bg-white/8 hover:text-white/60"
+                            >
+                              <Pencil size={11} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </motion.div>
+
+              {/* Gradient fade — hint that table continues */}
+              <AnimatePresence>
+                {!showAll && hasMore && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="pointer-events-none absolute bottom-0 left-0 right-0 h-14 rounded-b-2xl"
+                    style={{
+                      background: 'linear-gradient(to top, rgba(12,17,30,0.92) 0%, transparent 100%)',
+                    }}
+                  />
+                )}
+              </AnimatePresence>
             </div>
+
+            {/* Expand / collapse button */}
+            {hasMore && (
+              <button
+                onClick={() => setShowAll(v => !v)}
+                className="flex items-center justify-center gap-1.5 py-0.5 transition-opacity hover:opacity-80"
+              >
+                <span className="text-sm font-medium text-apple-blue">
+                  {showAll ? 'Zobrazit méně' : 'Zobrazit celou historii'}
+                </span>
+                <AnimatePresence>
+                  {!showAll && (
+                    <motion.span
+                      key="pill"
+                      initial={{ opacity: 0, scale: 0.7 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.7 }}
+                      transition={{ type: 'spring', damping: 20, stiffness: 400 }}
+                      className="rounded-full bg-apple-blue/10 px-2 py-0.5 text-[10px] font-semibold text-apple-blue"
+                    >
+                      {sortedRecords.length}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </button>
+            )}
           </div>
 
           {/* Purchases table */}

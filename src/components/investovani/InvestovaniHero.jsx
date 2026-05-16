@@ -38,7 +38,7 @@ function SegmentedControl({ view, onChange }) {
   )
 }
 
-export default function InvestovaniHero({ brokers, chartView, onChartViewChange }) {
+export default function InvestovaniHero({ brokers, chartView, onChartViewChange, className = '' }) {
   const totalValue = portfolioCurrentValue(brokers)
   const totalIn = portfolioCostBasis(brokers)
   const gain = totalValue - totalIn
@@ -48,7 +48,7 @@ export default function InvestovaniHero({ brokers, chartView, onChartViewChange 
   const data = heroChartData(brokers, chartView)
 
   return (
-    <div className="liquid-glass rounded-3xl p-6">
+    <div className={`liquid-glass rounded-3xl p-6 flex flex-col ${className}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <p className="text-[10px] font-medium uppercase tracking-widest text-white/35">
@@ -86,7 +86,7 @@ export default function InvestovaniHero({ brokers, chartView, onChartViewChange 
         </div>
       </div>
 
-      <div className="mt-4 h-36">
+      <div className="mt-4 flex-1 min-h-0">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>
             <defs>

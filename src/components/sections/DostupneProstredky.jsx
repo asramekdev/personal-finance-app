@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Wallet, Plus } from 'lucide-react'
+import PrimaryButton from '../ui/PrimaryButton'
 import { generateProductId, nextColor } from '../dostupne/dostupneData'
 import HeroModuleDostupne from '../dostupne/HeroModuleDostupne'
 import ProductCard from '../dostupne/ProductCard'
@@ -122,13 +123,10 @@ export default function DostupneProstredky({ products, setProducts }) {
               Dostupné prostředky
             </h1>
           </div>
-          <button
-            onClick={handleAddProduct}
-            className="flex items-center gap-1.5 rounded-xl bg-apple-blue/15 px-4 py-2 text-xs font-medium text-apple-blue transition-colors hover:bg-apple-blue/25"
-          >
+          <PrimaryButton onClick={handleAddProduct}>
             <Plus size={13} strokeWidth={2.5} />
             Přidat produkt
-          </button>
+          </PrimaryButton>
         </div>
 
         <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 gap-4 xl:grid-cols-3">

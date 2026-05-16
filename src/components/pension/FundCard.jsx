@@ -1,5 +1,6 @@
 import { Plus, ChevronRight } from 'lucide-react'
 import { currentValue, totalDeposited, formatCZK } from './pensionData'
+import PrimaryButton from '../ui/PrimaryButton'
 
 export default function FundCard({ fund, onOpenDetail, onNewRecord }) {
   const value = currentValue(fund.records)
@@ -50,13 +51,10 @@ export default function FundCard({ fund, onOpenDetail, onNewRecord }) {
           Detail
           <ChevronRight size={13} strokeWidth={2.5} />
         </button>
-        <button
-          onClick={() => onNewRecord(fund.id)}
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-apple-blue/15 py-2 text-xs font-medium text-apple-blue transition-colors hover:bg-apple-blue/25"
-        >
+        <PrimaryButton className="flex-1 justify-center" onClick={() => onNewRecord(fund.id)}>
           <Plus size={13} strokeWidth={2.5} />
           Nový záznam
-        </button>
+        </PrimaryButton>
       </div>
     </div>
   )

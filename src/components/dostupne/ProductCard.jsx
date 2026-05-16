@@ -1,5 +1,6 @@
 import { Plus, ChevronRight, Trash2 } from 'lucide-react'
 import { currentBalance, lastMonthBalance, formatCZK } from './dostupneData'
+import PrimaryButton from '../ui/PrimaryButton'
 
 export default function ProductCard({ product, onOpenHistorie, onNewRecord, onDelete }) {
   const balance = currentBalance(product.records)
@@ -56,13 +57,10 @@ export default function ProductCard({ product, onOpenHistorie, onNewRecord, onDe
           Historie
           <ChevronRight size={13} strokeWidth={2.5} />
         </button>
-        <button
-          onClick={() => onNewRecord(product.id)}
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-apple-blue/15 py-2 text-xs font-medium text-apple-blue transition-colors hover:bg-apple-blue/25"
-        >
+        <PrimaryButton className="flex-1 justify-center" onClick={() => onNewRecord(product.id)}>
           <Plus size={13} strokeWidth={2.5} />
           Nový záznam
-        </button>
+        </PrimaryButton>
       </div>
     </div>
   )
